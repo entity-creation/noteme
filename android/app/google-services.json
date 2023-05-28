@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "150946909084",
+    "project_id": "noteme-lathnog-project",
+    "storage_bucket": "noteme-lathnog-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150946909084:android:c546c35de3bc1252f85659",
+        "android_client_info": {
+          "package_name": "com.lathnog.noteme"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3IAu_aH0Z15q5tssbpBKJzG_V84bICew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
