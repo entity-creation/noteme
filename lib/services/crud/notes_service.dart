@@ -9,6 +9,9 @@ import 'package:sqflite/sqflite.dart';
 import 'crud_exceptions.dart';
 
 class NotesService {
+  static final NotesService _shared = NotesService._shaedInstance();
+  NotesService._shaedInstance();
+  factory NotesService() => _shared;
   Database? _db;
 
   List<DatabaseNote> _notes = [];
