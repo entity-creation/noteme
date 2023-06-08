@@ -9,15 +9,20 @@ import 'package:sqflite/sqflite.dart';
 import 'crud_exceptions.dart';
 
 class NotesService {
-  static final NotesService _shared = NotesService._shaedInstance();
-  NotesService._shaedInstance();
+  static final NotesService _shared = NotesService._sharedInstance();
+  NotesService._sharedInstance() {
+    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      },
+    );
+  }
   factory NotesService() => _shared;
   Database? _db;
 
   List<DatabaseNote> _notes = [];
 
-  final _notesStreamController =
-      StreamController<List<DatabaseNote>>.broadcast();
+  late final StreamController<List<DatabaseNote>> _notesStreamController;
 
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
 
@@ -215,6 +220,7 @@ class NotesService {
     } else {
       final note = DatabaseNote.fromRow(notes.first);
       _notes.removeWhere((note) => note.id == id);
+      _notes.add(note);
       _notesStreamController.add(_notes);
       return note;
     }
@@ -249,6 +255,7 @@ class NotesService {
     } else {
       final updatedNote = await getNote(id: note.id);
       _notes.removeWhere((note) => note.id == updatedNote.id);
+      _notes.add(updatedNote);
       _notesStreamController.add(_notes);
       return updatedNote;
     }
@@ -314,7 +321,7 @@ class DatabaseNote {
 }
 
 const dbName = "notes.db";
-const notesTable = "notes";
+const notesTable = "note";
 const userTable = "user";
 const idColumn = "id";
 const emailColumn = "email";
@@ -322,7 +329,7 @@ const userIdColumn = "user_id";
 const textColumn = "text";
 const isSyncedWithCloudColumn = "is_synced_with_cloud";
 //Create notes table
-const createNoteTable = """ 
+const createNoteTable = ''' 
       CREATE TABLE IF NOT EXISTS "note" (
 	    "id"	INTEGER NOT NULL,
       "user_id"	INTEGER NOT NULL,
@@ -331,13 +338,13 @@ const createNoteTable = """
       PRIMARY KEY("id" AUTOINCREMENT),
       FOREIGN KEY("user_id") REFERENCES "user"("id")
       );
-      """;
+      ''';
 
 //Create user table
-const createUserTable = """
+const createUserTable = '''
       CREATE TABLE IF NOT EXISTS "user" (
 	    "id"	INTEGER NOT NULL,
 	    "email"	TEXT NOT NULL UNIQUE,
 	    PRIMARY KEY("id" AUTOINCREMENT)
       );
-    """;
+    ''';
